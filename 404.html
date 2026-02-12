@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | v1rtu3.dev</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Roboto Mono', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated grid background */
+        .grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(239, 68, 68, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(239, 68, 68, 0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(60px, 60px);
+            }
+        }
+
+        /* Glowing orb effect */
+        .orb {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 8s ease-in-out infinite, pulse-orb 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .orb:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(251, 146, 60, 0.15) 0%, transparent 70%);
+            animation-delay: 2s;
+            animation-duration: 10s;
+        }
+
+        .orb:nth-child(3) {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            animation-delay: 4s;
+            animation-duration: 12s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(-50%, -50%);
+            }
+            33% {
+                transform: translate(-30%, -60%);
+            }
+            66% {
+                transform: translate(-70%, -40%);
+            }
+        }
+
+        @keyframes pulse-orb {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .error-code {
+            font-size: 10rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ef4444 0%, #fb923c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -4px;
+            animation: fadeIn 0.8s ease-out, glitch 3s ease-in-out infinite;
+            position: relative;
+            line-height: 1;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% {
+                transform: translate(0);
+            }
+            92% {
+                transform: translate(-2px, 2px);
+            }
+            94% {
+                transform: translate(2px, -2px);
+            }
+            96% {
+                transform: translate(-2px, -2px);
+            }
+            98% {
+                transform: translate(2px, 2px);
+            }
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+        }
+
+        .status-icon {
+            font-size: 1.2rem;
+            color: #ef4444;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .message {
+            font-size: 1.5rem;
+            color: #888;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            animation: fadeIn 0.8s ease-out 0.4s backwards;
+        }
+
+        .submessage {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 4rem;
+            animation: fadeIn 0.8s ease-out 0.5s backwards;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            animation: fadeIn 0.8s ease-out 0.6s backwards;
+        }
+
+        .link {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link:hover {
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .link-primary {
+            background: linear-gradient(135deg, #ef4444 0%, #fb923c 100%);
+            color: white;
+            border: none;
+        }
+
+        .link-primary:hover {
+            color: white;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Terminal effect */
+        .terminal {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 3rem 0;
+            text-align: left;
+            font-size: 0.85rem;
+            color: #666;
+            animation: fadeIn 0.8s ease-out 0.7s backwards;
+        }
+
+        .terminal-line {
+            margin: 0.5rem 0;
+            opacity: 0;
+            animation: terminalType 0.5s ease-out forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 1s; }
+        .terminal-line:nth-child(2) { animation-delay: 1.2s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.4s; }
+
+        @keyframes terminalType {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .terminal-prompt {
+            color: #ef4444;
+            margin-right: 0.5rem;
+        }
+
+        .terminal-error {
+            color: #fb923c;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ef4444;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 15s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(0) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Scan line effect */
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(239, 68, 68, 0.05) 50%,
+                transparent 100%
+            );
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 6rem;
+            }
+
+            .message {
+                font-size: 1.2rem;
+            }
+
+            .submessage {
+                font-size: 0.9rem;
+            }
+
+            .links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .link {
+                justify-content: center;
+            }
+
+            .terminal {
+                font-size: 0.75rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid"></div>
+    <div class="scanline"></div>
+    <div class="orb" style="top: 30%; left: 20%;"></div>
+    <div class="orb" style="top: 60%; left: 70%;"></div>
+    <div class="orb" style="top: 80%; left: 40%;"></div>
+
+    <div class="container">
+        <h1 class="error-code">404</h1>
+        
+        <div class="status">
+            <span class="status-icon">⚠</span>
+            <span class="status-text">Page Not Found</span>
+        </div>
+
+        <p class="message">This page doesn't exist</p>
+        <p class="submessage">The resource you're looking for has been moved, deleted, or never existed.</p>
+
+        <div class="terminal">
+            <div class="terminal-line">
+                <span class="terminal-prompt">$</span>
+                <span>GET /requested-page HTTP/1.1</span>
+            </div>
+            <div class="terminal-line">
+                <span class="terminal-prompt">←</span>
+                <span class="terminal-error">HTTP/1.1 404 Not Found</span>
+            </div>
+            <div class="terminal-line">
+                <span class="terminal-prompt">→</span>
+                <span>Redirecting to safety...</span>
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="/" class="link link-primary">
+                <span>←</span> Back to Home
+            </a>
+            <a href="https://github.com/v1rtu3-dv" class="link" target="_blank" rel="noopener noreferrer">
+                <span>→</span> GitHub
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particleCount = 30;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                
+                // Random colors from error gradient
+                const colors = ['#ef4444', '#fb923c', '#f59e0b'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Optional: Auto-redirect after delay (uncomment if desired)
+        // setTimeout(() => {
+        //     window.location.href = '/';
+        // }, 5000);
+    </script>
+</body>
+</html>
