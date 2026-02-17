@@ -1,348 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>v1rtu3.dev - Coming Soon</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v1rtu3.dev</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Roboto Mono', monospace;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
+    body {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Roboto Mono', monospace;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-        /* Animated grid background */
-        .grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridMove 20s linear infinite;
-            pointer-events: none;
-        }
+    /* ── Background ── */
+    .grid {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+      pointer-events: none; z-index: 0;
+    }
+    @keyframes gridMove {
+      0%   { transform: translate(0, 0); }
+      100% { transform: translate(60px, 60px); }
+    }
 
-        @keyframes gridMove {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(60px, 60px);
-            }
-        }
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(60px);
+      animation: float 8s ease-in-out infinite, pulseOrb 4s ease-in-out infinite;
+      pointer-events: none; z-index: 0;
+    }
+    .orb-1 { width:500px;height:500px;background:radial-gradient(circle,rgba(99,102,241,.2) 0%,transparent 70%);top:30%;left:20%; }
+    .orb-2 { width:400px;height:400px;background:radial-gradient(circle,rgba(139,92,246,.15) 0%,transparent 70%);top:60%;left:70%;animation-delay:2s;animation-duration:10s; }
+    .orb-3 { width:350px;height:350px;background:radial-gradient(circle,rgba(236,72,153,.1) 0%,transparent 70%);top:80%;left:40%;animation-delay:4s;animation-duration:12s; }
 
-        /* Glowing orb effect */
-        .orb {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
-            filter: blur(60px);
-            animation: float 8s ease-in-out infinite, pulse-orb 4s ease-in-out infinite;
-            pointer-events: none;
-        }
+    @keyframes float {
+      0%,100% { transform:translate(-50%,-50%); }
+      33%      { transform:translate(-30%,-60%); }
+      66%      { transform:translate(-70%,-40%); }
+    }
+    @keyframes pulseOrb {
+      0%,100% { opacity:.5;transform:scale(1); }
+      50%      { opacity:.8;transform:scale(1.1); }
+    }
 
-        .orb:nth-child(2) {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-            animation-delay: 2s;
-            animation-duration: 10s;
-        }
+    .scanline {
+      position: fixed; inset: 0;
+      background: linear-gradient(to bottom, transparent 0%, rgba(99,102,241,.05) 50%, transparent 100%);
+      animation: scan 8s linear infinite;
+      pointer-events: none; z-index: 1;
+    }
+    @keyframes scan {
+      0%   { transform:translateY(-100%); }
+      100% { transform:translateY(100%); }
+    }
 
-        .orb:nth-child(3) {
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
-            animation-delay: 4s;
-            animation-duration: 12s;
-        }
+    .particle {
+      position: fixed; width:4px; height:4px;
+      border-radius: 50%; pointer-events: none;
+      animation: particleFloat 15s linear infinite;
+      opacity: 0; z-index: 0;
+    }
+    @keyframes particleFloat {
+      0%   { transform:translateY(0) translateX(0) scale(0); opacity:0; }
+      10%  { opacity:1; }
+      90%  { opacity:1; }
+      100% { transform:translateY(-100vh) translateX(100px) scale(1.5); opacity:0; }
+    }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translate(-50%, -50%);
-            }
-            33% {
-                transform: translate(-30%, -60%);
-            }
-            66% {
-                transform: translate(-70%, -40%);
-            }
-        }
+    /* ── Layout ── */
+    .layout { display:flex; min-height:100vh; position:relative; z-index:10; }
 
-        @keyframes pulse-orb {
-            0%, 100% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.1);
-            }
-        }
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 260px;
+      background: rgba(10,10,10,0.85);
+      border-right: 1px solid rgba(99,102,241,0.2);
+      padding: 2rem 1.5rem;
+      position: fixed; top:0; left:0; height:100vh;
+      display: flex; flex-direction:column;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100;
+    }
 
-        .container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 2rem;
-            max-width: 800px;
-        }
+    .logo {
+      font-size: 1.4rem; font-weight:700;
+      background: linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom: 0.4rem; letter-spacing:-1px;
+    }
+    .cursor {
+      display:inline-block; width:2px; height:.9em;
+      background:#6366f1; margin-left:2px;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%,50% { opacity:1; }
+      51%,100% { opacity:0; }
+    }
 
-        .logo {
-            font-size: 5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-            letter-spacing: -2px;
-            animation: fadeIn 0.8s ease-out;
-            position: relative;
-        }
+    .subtitle { font-size:.7rem; color:#555; text-transform:uppercase; letter-spacing:1px; margin-bottom:2rem; }
 
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            margin-bottom: 3rem;
-            animation: fadeIn 0.8s ease-out 0.2s backwards;
-        }
+    .status {
+      display:flex; align-items:center; gap:.5rem;
+      background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.3);
+      padding:.4rem .9rem; border-radius:20px; margin-bottom:2.5rem; font-size:.68rem;
+    }
+    .status-dot {
+      width:6px; height:6px; background:#6366f1; border-radius:50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1;transform:scale(1); }
+      50%      { opacity:.5;transform:scale(1.2); }
+    }
+    .status-text { color:#6366f1; text-transform:uppercase; letter-spacing:1px; }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #6366f1;
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
+    nav { flex:1; }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.5;
-                transform: scale(1.2);
-            }
-        }
+    .nav-link {
+      display:flex; align-items:center; gap:.6rem;
+      padding:.65rem .9rem; margin-bottom:.35rem;
+      color:#555; text-decoration:none;
+      border-radius:8px; font-size:.85rem;
+      transition:all .2s; border:1px solid transparent;
+    }
+    .nav-link svg { width:15px; height:15px; opacity:.6; flex-shrink:0; }
+    .nav-link:hover,
+    .nav-link.active {
+      color:#6366f1;
+      background:rgba(99,102,241,.05);
+      border-color:rgba(99,102,241,.25);
+    }
+    .nav-link:hover svg,
+    .nav-link.active svg { opacity:1; }
 
-        .status-text {
-            font-size: 0.9rem;
-            color: #6366f1;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+    .social {
+      display:flex; gap:1rem;
+      padding-top:1.5rem;
+      border-top:1px solid rgba(99,102,241,.15);
+    }
+    .social-link { color:#555; text-decoration:none; transition:color .2s; display:flex; }
+    .social-link:hover { color:#6366f1; }
+    .social-link svg { width:18px; height:18px; }
 
-        .tagline {
-            font-size: 1.5rem;
-            color: #888;
-            margin-bottom: 4rem;
-            font-weight: 400;
-            animation: fadeIn 0.8s ease-out 0.4s backwards;
-        }
+    /* ── Main ── */
+    .main { margin-left:260px; flex:1; padding:3rem; }
 
-        .links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            animation: fadeIn 0.8s ease-out 0.6s backwards;
-        }
+    .page { display:none; animation:fadeIn .35s ease; }
+    .page.active { display:block; }
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(8px); }
+      to   { opacity:1; transform:none; }
+    }
 
-        .link {
-            color: #666;
-            text-decoration: none;
-            font-size: 0.95rem;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    /* ── Home ── */
+    .hero { max-width:680px; margin:5rem 0; }
+    .hero h1 {
+      font-size:clamp(2rem,4vw,3.25rem); font-weight:700; line-height:1.1;
+      margin-bottom:1.25rem;
+      background:linear-gradient(135deg,#fff 0%,#777 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .hero p { font-size:1rem; color:#777; line-height:1.85; }
 
-        .link:hover {
-            color: #6366f1;
-            border-color: rgba(99, 102, 241, 0.5);
-            background: rgba(99, 102, 241, 0.05);
-            transform: translateY(-2px);
-        }
+    /* ── Page header ── */
+    .page-header { margin-bottom:2.5rem; }
+    .page-header h2 {
+      font-size:2rem; font-weight:700; margin-bottom:.4rem;
+      background:linear-gradient(135deg,#fff 0%,#777 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .page-header p { font-size:.85rem; color:#555; }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    /* ── Projects ── */
+    .projects-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+      gap:1.25rem;
+    }
 
-        /* Terminal cursor effect */
-        .cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1.2em;
-            background: #6366f1;
-            margin-left: 4px;
-            animation: blink 1s step-end infinite;
-        }
+    .project-card {
+      background:rgba(20,20,20,.6);
+      border:1px solid rgba(99,102,241,.2);
+      border-radius:12px; padding:1.5rem;
+      transition:all .3s; position:relative; overflow:hidden;
+      opacity:0; animation:cardIn .5s ease forwards;
+    }
+    .project-card::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(99,102,241,.06) 0%, transparent 50%);
+      opacity:0; transition:opacity .3s; pointer-events:none;
+    }
+    .project-card:hover::before { opacity:1; }
+    .project-card:hover {
+      border-color:rgba(99,102,241,.45);
+      background:rgba(25,25,25,.85);
+      transform:translateY(-2px);
+    }
+    @keyframes cardIn { to { opacity:1; } }
 
-        @keyframes blink {
-            0%, 50% {
-                opacity: 1;
-            }
-            51%, 100% {
-                opacity: 0;
-            }
-        }
+    .project-card h3 { font-size:1.1rem; font-weight:600; margin-bottom:.6rem; color:#fff; }
+    .project-meta { display:flex; align-items:center; gap:.9rem; margin-bottom:.9rem; font-size:.72rem; color:#555; }
+    .project-lang { display:flex; align-items:center; gap:.3rem; }
+    .lang-dot { width:7px; height:7px; border-radius:50%; }
+    .project-stars { display:flex; align-items:center; gap:.2rem; }
+    .project-stars svg { width:11px; height:11px; fill:#d97706; }
+    .project-desc { font-size:.85rem; color:#777; line-height:1.6; margin-bottom:.9rem; }
+    .project-desc.empty { font-style:italic; color:#444; }
+    .project-tags { display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:.9rem; }
+    .ptag { font-size:.65rem; padding:.15rem .5rem; background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.18); border-radius:4px; color:#6366f1; }
+    .project-links { display:flex; gap:.6rem; padding-top:.9rem; border-top:1px solid rgba(99,102,241,.1); flex-wrap:wrap; }
+    .project-link {
+      display:inline-flex; align-items:center; gap:.3rem;
+      padding:.4rem .85rem;
+      background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.2);
+      border-radius:6px; color:#6366f1; text-decoration:none; font-size:.75rem;
+      transition:all .2s;
+    }
+    .project-link:hover { background:rgba(99,102,241,.18); border-color:rgba(99,102,241,.4); transform:scale(1.03); }
+    .project-link svg { width:12px; height:12px; }
 
-        /* Floating particles */
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #6366f1;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particleFloat 15s linear infinite;
-            opacity: 0;
-        }
+    .loader { display:flex; justify-content:center; padding:4rem; }
+    .spinner { width:36px; height:36px; border:2px solid rgba(99,102,241,.2); border-top-color:#6366f1; border-radius:50%; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
 
-        @keyframes particleFloat {
-            0% {
-                transform: translateY(0) translateX(0) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(100px) scale(1.5);
-                opacity: 0;
-            }
-        }
+    /* ── Blog ── */
+    .blog-list { max-width:760px; }
 
-        /* Scan line effect */
-        .scanline {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 0%,
-                rgba(99, 102, 241, 0.05) 50%,
-                transparent 100%
-            );
-            animation: scan 8s linear infinite;
-            pointer-events: none;
-            z-index: 5;
-        }
+    .blog-entry {
+      border:1px solid rgba(99,102,241,.18);
+      border-radius:12px; overflow:hidden;
+      background:rgba(18,18,18,.7);
+      margin-bottom:1rem;
+      opacity:0; animation:cardIn .4s ease forwards;
+    }
 
-        @keyframes scan {
-            0% {
-                transform: translateY(-100%);
-            }
-            100% {
-                transform: translateY(100%);
-            }
-        }
+    .blog-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.5rem 1.75rem;
+      cursor:pointer;
+      transition:background .2s;
+      user-select:none;
+      gap:1rem;
+    }
+    .blog-header:hover { background:rgba(99,102,241,.04); }
+    .blog-header-left { flex:1; min-width:0; }
 
-        @media (max-width: 768px) {
-            .logo {
-                font-size: 3rem;
-            }
+    .blog-meta-row {
+      display:flex; align-items:center; gap:.6rem;
+      margin-bottom:.45rem; flex-wrap:wrap;
+    }
+    .blog-date { font-size:.68rem; color:#555; text-transform:uppercase; letter-spacing:1px; }
+    .blog-tag { font-size:.62rem; padding:.1rem .45rem; background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.2); border-radius:3px; color:#6366f1; }
 
-            .tagline {
-                font-size: 1.2rem;
-            }
+    .blog-title { font-size:1.05rem; font-weight:600; color:#e0e0e0; margin-bottom:.35rem; line-height:1.3; }
+    .blog-preview { font-size:.8rem; color:#666; line-height:1.5; }
 
-            .links {
-                flex-direction: column;
-                gap: 1rem;
-            }
+    .blog-chevron {
+      width:18px; height:18px; color:#444; flex-shrink:0;
+      transition:transform .3s ease, color .2s;
+    }
+    .blog-entry.open .blog-chevron { transform:rotate(180deg); color:#6366f1; }
+    .blog-header:hover .blog-chevron { color:#6366f1; }
 
-            .link {
-                justify-content: center;
-            }
-        }
-    </style>
+    /* Dropdown body */
+    .blog-body {
+      display:grid;
+      grid-template-rows:0fr;
+      transition:grid-template-rows .35s ease;
+      border-top:1px solid transparent;
+    }
+    .blog-entry.open .blog-body {
+      grid-template-rows:1fr;
+      border-top-color:rgba(99,102,241,.15);
+    }
+    .blog-body-inner { overflow:hidden; }
+
+    /* Prose */
+    .blog-content {
+      padding:1.75rem;
+      font-size:.88rem; color:#999; line-height:1.9;
+    }
+    .blog-content h2 { font-size:1rem; font-weight:600; color:#ddd; margin:1.5rem 0 .5rem; }
+    .blog-content h3 { font-size:.9rem; font-weight:600; color:#ccc; margin:1.2rem 0 .4rem; }
+    .blog-content p  { margin-bottom:1rem; }
+    .blog-content p:last-child { margin-bottom:0; }
+    .blog-content a  { color:#6366f1; text-decoration:underline; text-underline-offset:3px; }
+    .blog-content strong { color:#ddd; font-weight:600; }
+    .blog-content em { font-style:italic; }
+    .blog-content code {
+      font-family:inherit; font-size:.82em;
+      background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.2);
+      padding:.1em .35em; border-radius:4px; color:#a5b4fc;
+    }
+    .blog-content pre {
+      background:#111; border:1px solid rgba(99,102,241,.2);
+      padding:1.25rem; border-radius:8px;
+      overflow-x:auto; margin:1rem 0; font-size:.78rem; line-height:1.7;
+    }
+    .blog-content pre code { background:none; border:none; padding:0; color:#a5b4fc; }
+    .blog-content blockquote { border-left:2px solid rgba(99,102,241,.4); padding-left:1rem; color:#666; font-style:italic; margin:1rem 0; }
+    .blog-content ul, .blog-content ol { padding-left:1.5rem; margin-bottom:1rem; }
+    .blog-content li { margin-bottom:.3rem; }
+    .blog-content hr { border:none; border-top:1px solid rgba(99,102,241,.15); margin:1.5rem 0; }
+
+    /* ── Mobile ── */
+    @media (max-width:768px) {
+      .sidebar { width:100%; height:auto; position:static; border-right:none; border-bottom:1px solid rgba(99,102,241,.2); }
+      .main { margin-left:0; padding:2rem 1.25rem; }
+      .hero h1 { font-size:2rem; }
+      .projects-grid { grid-template-columns:1fr; }
+    }
+  </style>
 </head>
 <body>
-    <div class="grid"></div>
-    <div class="scanline"></div>
-    <div class="orb" style="top: 30%; left: 20%;"></div>
-    <div class="orb" style="top: 60%; left: 70%;"></div>
-    <div class="orb" style="top: 80%; left: 40%;"></div>
 
-    <div class="container">
-        <h1 class="logo">v1rtu3.dev<span class="cursor"></span></h1>
-        
-        <div class="status">
-            <span class="status-dot"></span>
-            <span class="status-text">Coming Soon</span>
-        </div>
+<div class="grid"></div>
+<div class="scanline"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
 
-        <p class="tagline">Developer Portfolio</p>
+<div class="layout">
 
-        <div class="links">
-            <a href="https://github.com/v1rtu3-dv" class="link" target="_blank" rel="noopener noreferrer">
-                <span>→</span> GitHub
-            </a>
-        </div>
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div>
+      <div class="logo">v1rtu3.dev<span class="cursor"></span></div>
+      <div class="subtitle">Developer Portfolio</div>
+      <div class="status">
+        <span class="status-dot"></span>
+        <span class="status-text">Available</span>
+      </div>
     </div>
 
-    <script>
-        // Create floating particles
-        function createParticles() {
-            const particleCount = 40;
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
-                
-                // Random colors from gradient
-                const colors = ['#6366f1', '#8b5cf6', '#ec4899'];
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                
-                document.body.appendChild(particle);
-            }
-        }
+    <nav>
+      <a href="#home"     class="nav-link active" data-page="home">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 22V12h6v10"/></svg>
+        Home
+      </a>
+      <a href="#projects" class="nav-link" data-page="projects">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        Projects
+      </a>
+      <a href="#blog"     class="nav-link" data-page="blog">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        Blog
+      </a>
+    </nav>
 
-        createParticles();
-    </script>
+    <div class="social">
+      <a href="https://github.com/v1rtu3-dv" target="_blank" rel="noopener noreferrer" class="social-link">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.79-.26.79-.58v-2.23c-3.34.73-4.03-1.42-4.03-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.05.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.19.69.8.58A12 12 0 0 0 24 12C24 5.37 18.63 0 12 0z"/></svg>
+      </a>
+      <a href="mailto:your@email.com" class="social-link">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- Home -->
+    <div id="home" class="page active">
+      <div class="hero">
+        <h1>Building digital experiences with precision and craft</h1>
+        <p>Design engineer focused on creating interfaces that balance technical excellence with thoughtful design. Working at the intersection of code and aesthetics.</p>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div id="projects" class="page">
+      <div class="page-header">
+        <h2>Projects</h2>
+        <p>All public repositories from GitHub</p>
+      </div>
+      <div id="projects-container">
+        <div class="loader"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         BLOG PAGE
+         To add a new post, copy one <article> block and paste it
+         at the TOP of the blog-list div (newest first).
+         Fill in the four data- attributes, then write your post
+         inside <div class="blog-content">.
+         ================================================================ -->
+    <div id="blog" class="page">
+      <div class="page-header">
+        <h2>Blog</h2>
+        <p>Thoughts on design, engineering, and craft</p>
+      </div>
+
+      <div class="blog-list">
+
+        <!-- ┌─────────────────────────────────────────────────────────┐
+             │  COPY THIS BLOCK TO ADD A NEW POST — paste above here   │
+             └─────────────────────────────────────────────────────────┘
+
+        <article class="blog-entry"
+          data-title="Your Post Title Here"
+          data-date="Jan 1, 2025"
+          data-tags="tag1, tag2"
+          data-preview="One or two sentences shown as the preview before the post is opened.">
+          <div class="blog-content">
+            <p>Your first paragraph goes here.</p>
+            <p>Add as many paragraphs as you like.</p>
+            <h2>A Subheading</h2>
+            <p>Content under the subheading.</p>
+            <p>Use <strong>bold</strong> or <em>italic</em> or <code>inline code</code> freely.</p>
+            <pre><code>// A code block
+const hello = () => console.log('world');</code></pre>
+            <blockquote>A blockquote if you need one.</blockquote>
+          </div>
+        </article>
+
+        -->
+
+        <!-- ── POST 1 ── -->
+        <article class="blog-entry"
+          data-title="Building in Public: My First Portfolio"
+          data-date="Feb 15, 2025"
+          data-tags="personal, webdev"
+          data-preview="Decided to finally build my portfolio from scratch — no frameworks, no npm, just a single HTML file. Here's what the process taught me.">
+          <div class="blog-content">
+            <p>Decided to finally build my portfolio from scratch. The goal was simple: no frameworks, no build tools, no npm. Just a single HTML file I could open in a browser.</p>
+            <p>The first thing I noticed is how much mental overhead disappears when you remove the toolchain. No webpack config, no tsconfig, no <code>node_modules</code> folder with 400 packages. Write code, hit save, refresh the browser.</p>
+            <h2>What I Learned</h2>
+            <p>CSS has come a long way. Between <code>backdrop-filter</code>, custom properties, and native <code>animation</code>, you can build things that previously required a whole animation library.</p>
+            <p>The grid background, floating orbs, and scanline effect on this site? Pure CSS. Zero JavaScript involved.</p>
+            <h2>The Tradeoffs</h2>
+            <p>You lose hot reload, TypeScript, and component reuse. For a personal portfolio that changes rarely, that's a totally acceptable tradeoff. For anything with real scale or a team, reach for the framework.</p>
+            <p>For now though — just me and a text editor. That feels exactly right.</p>
+          </div>
+        </article>
+
+        <!-- ── POST 2 ── -->
+        <article class="blog-entry"
+          data-title="Why I Love Monospace Fonts"
+          data-date="Feb 10, 2025"
+          data-tags="design, typography"
+          data-preview="There's something about monospace fonts that feels right for developer portfolios. Technical, precise, and somehow nostalgic all at once.">
+          <div class="blog-content">
+            <p>Every font choice sends a message. Serif says "I take ideas seriously." Sans-serif says "I'm clean and modern." Monospace says "I live in a terminal and I'm proud of it."</p>
+            <p>For a developer portfolio, that last message is exactly right. A monospace font immediately signals a technical space without needing to say it.</p>
+            <h2>SF Mono Specifically</h2>
+            <p>SF Mono (Apple's system monospace) has unusually good letterforms for a code font. Most monospace fonts sacrifice aesthetics for legibility — SF Mono manages both.</p>
+            <p>The fallback chain <code>'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code'</code> covers basically every OS without loading a single external file.</p>
+            <h2>The One Gotcha</h2>
+            <p>Long runs of body text in monospace are brutal to read. Use it for headings and UI labels, switch to a proportional font for anything paragraph-length. Your readers will thank you.</p>
+          </div>
+        </article>
+
+      </div><!-- end .blog-list -->
+    </div><!-- end #blog -->
+
+  </main>
+</div>
+
+<script>
+  // ── Config ──────────────────────────────────────────────
+  const GITHUB_USER = 'v1rtu3-dv';
+
+  // ── Navigation ──────────────────────────────────────────
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const id = link.dataset.page;
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === 'projects' && !document.querySelector('.projects-grid')) loadProjects();
+    });
+  });
+
+  // ── Blog: build accordion UI from data attributes ───────
+  document.querySelectorAll('.blog-entry').forEach((entry, i) => {
+    const title   = entry.dataset.title   || 'Untitled';
+    const date    = entry.dataset.date    || '';
+    const tags    = (entry.dataset.tags   || '').split(',').map(t => t.trim()).filter(Boolean);
+    const preview = entry.dataset.preview || '';
+
+    // Grab content written inside the article
+    const content = entry.querySelector('.blog-content');
+    const contentHTML = content ? content.outerHTML : '';
+
+    entry.style.animationDelay = `${i * 0.07}s`;
+
+    entry.innerHTML = `
+      <div class="blog-header">
+        <div class="blog-header-left">
+          <div class="blog-meta-row">
+            ${date ? `<span class="blog-date">${date}</span>` : ''}
+            ${tags.map(t => `<span class="blog-tag">${t}</span>`).join('')}
+          </div>
+          <div class="blog-title">${title}</div>
+          <div class="blog-preview">${preview}</div>
+        </div>
+        <svg class="blog-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+      <div class="blog-body">
+        <div class="blog-body-inner">
+          ${contentHTML}
+        </div>
+      </div>`;
+
+    entry.querySelector('.blog-header').addEventListener('click', () => {
+      const isOpen = entry.classList.contains('open');
+      document.querySelectorAll('.blog-entry.open').forEach(e => e.classList.remove('open'));
+      if (!isOpen) entry.classList.add('open');
+    });
+  });
+
+  // ── Live check ───────────────────────────────────────────
+  async function isLive(url) {
+    if (!url) return false;
+    try {
+      const ctrl  = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 3000);
+      await fetch(url, { mode: 'no-cors', signal: ctrl.signal });
+      clearTimeout(timer);
+      return true;
+    } catch { return false; }
+  }
+
+  // ── Projects ─────────────────────────────────────────────
+  async function loadProjects() {
+    const container = document.getElementById('projects-container');
+    try {
+      const res  = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`);
+      if (!res.ok) throw new Error();
+      const all  = await res.json();
+
+      const repos = all
+        .filter(r => !r.fork)
+        .sort((a, b) => {
+          const s = r => r.stargazers_count * 100 + (r.homepage ? 50 : 0) + new Date(r.updated_at) / 1e9;
+          return s(b) - s(a);
+        });
+
+      if (!repos.length) {
+        container.innerHTML = '<p style="color:#555;text-align:center;padding:3rem">No public repos found.</p>';
+        return;
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'projects-grid';
+      container.innerHTML = '';
+      container.appendChild(grid);
+
+      repos.forEach((r, i) => {
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.style.animationDelay = `${i * 0.03}s`;
+
+        const name    = r.name.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+        const liveUrl = r.homepage || (r.has_pages ? `https://${GITHUB_USER}.github.io/${r.name}` : null);
+        const color   = langColor(r.language);
+
+        card.innerHTML = `
+          <h3>${name}</h3>
+          <div class="project-meta">
+            <span class="project-lang">
+              <span class="lang-dot" style="background:${color}"></span>
+              ${r.language || 'Unknown'}
+            </span>
+            ${r.stargazers_count > 0 ? `<span class="project-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>${r.stargazers_count}</span>` : ''}
+          </div>
+          <p class="project-desc${!r.description ? ' empty' : ''}">${r.description || 'A project exploring new ideas'}</p>
+          ${r.topics?.length ? `<div class="project-tags">${r.topics.slice(0,5).map(t=>`<span class="ptag">${t}</span>`).join('')}</div>` : ''}
+          <div class="project-links">
+            <a href="${r.html_url}" target="_blank" rel="noopener noreferrer" class="project-link">
+              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.79-.26.79-.58v-2.23c-3.34.73-4.03-1.42-4.03-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.05.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.19.69.8.58A12 12 0 0 0 24 12C24 5.37 18.63 0 12 0z"/></svg>
+              Code
+            </a>
+            ${liveUrl ? `<span class="project-link" id="live-${r.id}" style="opacity:.4;cursor:wait;">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>
+              Checking...
+            </span>` : ''}
+          </div>`;
+
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--x', ((e.clientX - rect.left) / rect.width  * 100) + '%');
+          card.style.setProperty('--y', ((e.clientY - rect.top)  / rect.height * 100) + '%');
+        });
+
+        grid.appendChild(card);
+
+        if (liveUrl) {
+          isLive(liveUrl).then(live => {
+            const el = document.getElementById(`live-${r.id}`);
+            if (!el) return;
+            live
+              ? el.outerHTML = `<a href="${liveUrl}" target="_blank" rel="noopener noreferrer" class="project-link"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>Live</a>`
+              : el.remove();
+          });
+        }
+      });
+    } catch {
+      container.innerHTML = '<p style="color:#555;text-align:center;padding:3rem">Could not load projects.</p>';
+    }
+  }
+
+  // ── Language colours ─────────────────────────────────────
+  function langColor(lang) {
+    const map = {
+      JavaScript:'#f1e05a', TypeScript:'#3178c6', Python:'#3572A5',
+      HTML:'#e34c26', CSS:'#563d7c', Rust:'#dea584', Go:'#00ADD8',
+      Ruby:'#701516', Java:'#b07219', 'C++':'#f34b7d', C:'#555555',
+      Shell:'#89e051', Vue:'#41b883', Svelte:'#ff3e00',
+      Kotlin:'#A97BFF', Swift:'#F05138', PHP:'#4F5D95',
+    };
+    return map[lang] || '#6366f1';
+  }
+
+  // ── Particles ────────────────────────────────────────────
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;animation-delay:${Math.random()*15}s;animation-duration:${10+Math.random()*10}s;background:${ ['#6366f1','#8b5cf6','#ec4899'][~~(Math.random()*3)] }`;
+    document.body.appendChild(p);
+  }
+</script>
+
 </body>
 </html>
